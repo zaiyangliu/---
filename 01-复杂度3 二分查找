@@ -1,0 +1,20 @@
+Position BinarySearch(List L, ElementType X){
+  int left, right;
+  if(L->Last){
+    left = 1;
+    right = L->Last;
+    int middle;
+    while(left <= right){
+      middle = (right + left) / 2;
+      if(L->Data[middle] == X) return middle;
+      else if(L->Data[middle] < X){
+        left = middle + 1;
+      }
+      else{
+        right = middle - 1;
+      }
+    }
+    
+  }
+  return NotFound;
+}
