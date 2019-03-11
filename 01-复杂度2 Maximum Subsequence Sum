@@ -1,0 +1,29 @@
+#include<cstdio> //第一种方法！
+#define Max 100010
+int main(){
+  int Thissum, maxsum = -1;
+  int a[Max];
+  int k;
+  scanf("%d", &k);
+  for(int i = 0; i < k; ++i){
+    scanf("%d", &a[i]);
+  }
+  int left = 0, right = 0;
+  for(int i = 0; i < k; ++i){
+    Thissum = 0;
+    for(int j = i; j < k; ++j){
+      Thissum += a[j];
+      if(Thissum > maxsum) {
+        maxsum = Thissum;
+        left = a[i];
+        right = a[j];
+      }
+    }
+    
+  }
+  if(maxsum == -1){
+    printf("%d %d %d\n", 0, a[0], a[k - 1]); //处理全是负数的 情况！
+  }
+  else printf("%d %d %d\n", maxsum, left, right);
+  return 0;
+}
