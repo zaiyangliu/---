@@ -1,0 +1,105 @@
+//方法一 不建树
+#include<cstdio>
+#include<cstring>
+#include<stack>
+#include<algorithm>
+using namespace std;
+const int maxn = 50;
+int pre[maxn], in[maxn], post[maxn];
+void solve(int preL, int inL, int postL, int n){
+    if(n == 0) return;
+    if(n == 1) post[postL] = pre[preL];
+    int root = pre[preL];
+    post[postL+n-1] = root;
+    int i;
+    for(i = 0; i < n; ++i){
+        if(in[inL+i] == root) break;
+    }
+    int L = i;
+    int R = n - L - 1;
+    solve(preL+1, inL, postL, L);
+    solve(preL+L+1, inL+L+1, postL+L, R);
+}
+int main(){
+    int n;
+  scanf("%d", &n);
+  char str[5];
+  stack<int> st;
+  int x, preIndex = 0, inIndex = 0;
+  for(int i = 0; i < 2 * n; ++i){
+    scanf("%s", str);
+    if(strcmp(str, "Push") == 0){
+      scanf("%d", &x);
+      pre[preIndex++] = x;
+      st.push(x);
+    }
+    else{
+      in[inIndex++] = st.top();
+      st.pop();
+    }
+  }
+  solve(0, 0, 0, n);
+  for(int i = 0; i < n; ++i){
+      printf("%d", post[i]);
+      if(i < n - 1) printf(" ");
+  }
+  return 0;
+}
+
+//方法二 建树
+#include<cstdio>
+#include<cstring>
+#include<stack>
+#include<algorithm>
+using namespace std;
+const int maxn = 50;
+struct node{
+  int data;
+  node* lchild;
+  node* rchild;
+};
+int pre[maxn], in[maxn], post[maxn];
+int n;
+node* creat(int preL, int preR, int inL, int inR){
+  if(preL > preR) return NULL;
+  node* root = new node;
+  root->data = pre[preL];
+  int k;
+  for(k = inL; k <= inR; k++){
+    if(in[k] == pre[preL]) break;
+  }
+  int numLeft = k - inL;
+  root->lchild = creat(preL + 1, preL + numLeft, inL, k - 1);
+  root->rchild = creat(preL + numLeft + 1, preR, k + 1, inR);
+  return root;
+}
+int num = 0;
+void postorder(node* root){
+  if(root == NULL) return;
+  postorder(root->lchild);
+  postorder(root->rchild);
+  printf("%d", root->data);
+  num++;
+  if(num < n) printf(" ");
+}
+int main(){
+  scanf("%d", &n);
+  char str[5];
+  stack<int> st;
+  int x, preIndex = 0, inIndex = 0;
+  for(int i = 0; i < 2 * n; ++i){
+    scanf("%s", str);
+    if(strcmp(str, "Push") == 0){
+      scanf("%d", &x);
+      pre[preIndex++] = x;
+      st.push(x);
+    }
+    else{
+      in[inIndex++] = st.top();
+      st.pop();
+    }
+  }
+  node* root = creat(0, n - 1, 0, n - 1);
+  postorder(root);
+  return 0;
+}
