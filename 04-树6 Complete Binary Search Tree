@@ -25,3 +25,44 @@ int main(){
     }
     return 0;
 }
+//方法二 陈越老师给出的解法
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+const int maxn = 1010;
+int n, A[maxn], T[maxn];
+int cmp(const void* a, const void* b){
+    return *(int*) a - *(int*)b;
+}
+int GetLeftLength(int N){
+    int H = int (log2(N+1));
+    int x = N + 1 - pow(2, H);
+    x = x > pow(2, H-1) ? pow(2, H -1) : x;
+    int L = pow(2, H-1) - 1 + x;
+    return L;
+}
+void solve(int Aleft, int Aright, int Troot){
+    int n = Aright - Aleft + 1;
+    if(n <= 0) return;
+    if(n == 1) T[Troot] = A[Aleft];
+    int L = GetLeftLength(n);
+    int LeftRoot = 2 * Troot + 1;
+    int RightRoot = LeftRoot + 1;
+    T[Troot] = A[Aleft+L];
+    solve(Aleft, Aleft+L-1, LeftRoot);
+    solve(Aleft+L+1, Aright, RightRoot);
+}
+
+int main(){
+    scanf("%d", &n);
+    for(int i = 0; i < n; ++i){
+        scanf("%d", &A[i]);
+    }
+    qsort(A, n, sizeof(int), cmp);
+    solve(0, n-1, 0);
+    for(int i = 0; i < n; ++i){
+        printf("%d", T[i]);
+        if(i < n-1) printf(" ");
+    }
+    return 0;
+}
